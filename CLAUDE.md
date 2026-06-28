@@ -6,12 +6,14 @@ E-commerce web application for electronically filing IRS 1099 information return
 
 ## Tech Stack
 
-- **Backend**: Spring Boot 3.x, Java 21, Maven, Spring Security, Spring Data JPA, Spring AI
+- **Backend**: Spring Boot 2.7.18, Java 17, Maven, Spring Security 5.x, Spring Data JPA
 - **Frontend**: React 18, Vite, TypeScript, Tailwind CSS, Zustand, React Hook Form + Zod
 - **Database**: MySQL (prod), H2 (dev)
 - **Payments**: Stripe
 - **AI**: Spring AI with Anthropic Claude
-- **Hosting**: MochaHost (Java engine + Node.js engine)
+- **Hosting**: MochaHost (Tomcat 9, JDK 17-19, Node.js v18/v20)
+- **Domain**: subdomain of visibleai.com
+- **Packaging**: WAR (deployed to Tomcat 9)
 
 ## Project Structure
 

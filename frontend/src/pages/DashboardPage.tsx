@@ -2,17 +2,26 @@ import { useState, useEffect } from 'react';
 import { useAuthStore } from '../store/authStore';
 import { profileService } from '../services/profileService';
 import { FileText, Upload, Clock, CheckCircle, AlertCircle, CreditCard, Building2, ArrowRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 export default function DashboardPage() {
   const user = useAuthStore((s) => s.user);
   const [hasProfile, setHasProfile] = useState<boolean | null>(null);
+  const [searchParams] = useSearchParams();
 
   useEffect(() => {
     profileService.hasProfile()
       .then((res) => setHasProfile(res.data.exists))
       .catch(() => setHasProfile(false));
-  }, []);
+
+    const payment = searchParams.get('payment');
+    if (payment === 'success') {
+      toast.success('Payment successful! You can now file your 1099s.');
+    } else if (payment === 'cancelled') {
+      toast('Payment was cancelled.', { icon: '🔙' });
+    }
+  }, [searchParams]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -52,15 +61,15 @@ export default function DashboardPage() {
           </div>
         </Link>
 
-        <button className="card hover:shadow-md transition-shadow text-left flex items-start gap-4">
+        <Link to="/billing" className="card hover:shadow-md transition-shadow text-left flex items-start gap-4">
           <div className="p-3 bg-green-100 rounded-lg">
-            <Upload className="text-green-600" size={24} />
+            <CreditCard className="text-green-600" size={24} />
           </div>
           <div>
-            <h3 className="font-semibold text-lg">Bulk Upload</h3>
-            <p className="text-sm text-gray-600">Import from CSV or Excel</p>
+            <h3 className="font-semibold text-lg">Billing</h3>
+            <p className="text-sm text-gray-600">Plans, payments & subscription</p>
           </div>
-        </button>
+        </Link>
 
         <Link to="/profile" className="card hover:shadow-md transition-shadow text-left flex items-start gap-4">
           <div className="p-3 bg-purple-100 rounded-lg">

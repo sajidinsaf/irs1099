@@ -52,8 +52,11 @@ public class SecurityConfig {
                     "/actuator/health",
                     "/h2-console/**",
                     "/stripe/webhook",
+                    "/payments/webhook",
+                    "/payments/config",
+                    "/payments/plans",
                     "/login", "/register", "/dashboard", "/profile",
-                    "/filing/**",
+                    "/filing/**", "/billing",
                     "/verify-email", "/forgot-password", "/reset-password"
                 ).permitAll()
                 .anyRequest().authenticated()

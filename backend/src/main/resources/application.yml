@@ -47,6 +47,10 @@ app:
   stripe:
     api-key: ${STRIPE_API_KEY:}
     webhook-secret: ${STRIPE_WEBHOOK_SECRET:}
+    publishable-key: ${STRIPE_PUBLISHABLE_KEY:}
+    prices:
+      per-form: ${STRIPE_PRICE_PER_FORM:}
+      professional: ${STRIPE_PRICE_PROFESSIONAL:}
 
   iris:
     base-url: https://api.www4.irs.gov

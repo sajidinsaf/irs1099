@@ -41,7 +41,7 @@ const steps = [
   { step: '1', title: 'Create Account', description: 'Register with your email and set up your business profile.' },
   { step: '2', title: 'Enter Form Data', description: 'Fill in your 1099 data manually or upload a CSV/Excel file.' },
   { step: '3', title: 'Review & Pay', description: 'AI validates your data, you review and complete payment.' },
-  { step: '4', title: 'Submit to IRS', description: 'We generate the XML and submit directly to IRS IRIS. Track status in real-time.' },
+  { step: '4', title: 'Submit to IRS', description: 'We submit your forms directly to the IRS. Track your filing status in real-time.' },
 ];
 
 const pricing = [

@@ -1,0 +1,32 @@
+:root {
+  --ifm-color-primary: #2563eb;
+  --ifm-color-primary-dark: #1d4ed8;
+  --ifm-color-primary-darker: #1e40af;
+  --ifm-color-primary-darkest: #1e3a8a;
+  --ifm-color-primary-light: #3b82f6;
+  --ifm-color-primary-lighter: #60a5fa;
+  --ifm-color-primary-lightest: #93c5fd;
+  --ifm-code-font-size: 95%;
+  --ifm-font-family-base: 'Inter', system-ui, -apple-system, sans-serif;
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+}
+
+.navbar {
+  background-color: #1a365d;
+}
+
+.navbar__title {
+  color: white;
+}
+
+.navbar__link {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.navbar__link:hover {
+  color: white;
+}
+
+.footer--dark {
+  background-color: #0f2440;
+}

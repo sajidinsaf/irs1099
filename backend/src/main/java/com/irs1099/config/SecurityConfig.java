@@ -53,6 +53,7 @@ public class SecurityConfig {
                     "/h2-console/**",
                     "/stripe/webhook",
                     "/login", "/register", "/dashboard", "/profile",
+                    "/filing/**",
                     "/verify-email", "/forgot-password", "/reset-password"
                 ).permitAll()
                 .anyRequest().authenticated()

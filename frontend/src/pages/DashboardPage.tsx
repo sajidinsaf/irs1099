@@ -42,7 +42,7 @@ export default function DashboardPage() {
 
       {/* Quick Actions */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <button className="card hover:shadow-md transition-shadow text-left flex items-start gap-4">
+        <Link to="/filing/new" className="card hover:shadow-md transition-shadow text-left flex items-start gap-4">
           <div className="p-3 bg-primary-100 rounded-lg">
             <FileText className="text-primary-600" size={24} />
           </div>
@@ -50,7 +50,7 @@ export default function DashboardPage() {
             <h3 className="font-semibold text-lg">New Filing</h3>
             <p className="text-sm text-gray-600">Start a new 1099 submission</p>
           </div>
-        </button>
+        </Link>
 
         <button className="card hover:shadow-md transition-shadow text-left flex items-start gap-4">
           <div className="p-3 bg-green-100 rounded-lg">

@@ -7,6 +7,8 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
 import BusinessProfilePage from './pages/BusinessProfilePage';
+import NewFilingPage from './pages/NewFilingPage';
+import Form1099NecPage from './pages/Form1099NecPage';
 import VerifyEmailPage from './pages/VerifyEmailPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 
@@ -31,6 +33,8 @@ export default function App() {
         <Route element={<Layout />}>
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/profile" element={<BusinessProfilePage />} />
+          <Route path="/filing/new" element={<NewFilingPage />} />
+          <Route path="/filing/:submissionId" element={<Form1099NecPage />} />
         </Route>
       </Route>
     </Routes>

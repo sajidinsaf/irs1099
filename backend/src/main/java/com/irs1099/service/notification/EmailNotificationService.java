@@ -77,12 +77,21 @@ public class EmailNotificationService implements NotificationService {
         context.setVariable("receiptId", submission.getReceiptId());
         context.setVariable("submittedAt", submission.getSubmittedAt());
 
-        Notification.NotificationType type = switch (submission.getStatus()) {
-            case ACCEPTED -> Notification.NotificationType.SUBMISSION_ACCEPTED;
-            case REJECTED -> Notification.NotificationType.SUBMISSION_REJECTED;
-            case ACCEPTED_WITH_ERRORS, PARTIALLY_ACCEPTED -> Notification.NotificationType.SUBMISSION_ERRORS;
-            default -> Notification.NotificationType.SUBMISSION_SUBMITTED;
-        };
+        Notification.NotificationType type;
+        switch (submission.getStatus()) {
+            case ACCEPTED:
+                type = Notification.NotificationType.SUBMISSION_ACCEPTED;
+                break;
+            case REJECTED:
+                type = Notification.NotificationType.SUBMISSION_REJECTED;
+                break;
+            case ACCEPTED_WITH_ERRORS:
+            case PARTIALLY_ACCEPTED:
+                type = Notification.NotificationType.SUBMISSION_ERRORS;
+                break;
+            default:
+                type = Notification.NotificationType.SUBMISSION_SUBMITTED;
+        }
 
         sendEmail(user, subject, "email/submission-status", context, type);
     }

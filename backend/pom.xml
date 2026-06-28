@@ -19,8 +19,8 @@
     <description>E-commerce platform for IRS 1099 electronic filing via IRIS A2A</description>
 
     <properties>
-        <java.version>17</java.version>
-        <jjwt.version>0.12.6</jjwt.version>
+        <java.version>1.8</java.version>
+        <jjwt.version>0.11.5</jjwt.version>
         <stripe.version>28.2.0</stripe.version>
     </properties>
 

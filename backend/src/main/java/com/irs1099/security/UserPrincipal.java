@@ -56,6 +56,6 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return emailVerified;
+        return true; // Allow login before email verification; check emailVerified in controllers
     }
 }

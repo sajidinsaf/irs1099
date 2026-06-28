@@ -22,6 +22,7 @@ public class SubmissionResponse {
     private int recordCount;
     private LocalDateTime submittedAt;
     private LocalDateTime createdAt;
+    private String irsErrors;
 
     public static SubmissionResponse fromEntity(Submission s, int recordCount) {
         return SubmissionResponse.builder()
@@ -36,6 +37,7 @@ public class SubmissionResponse {
                 .recordCount(recordCount)
                 .submittedAt(s.getSubmittedAt())
                 .createdAt(s.getCreatedAt())
+                .irsErrors(s.getIrsErrors())
                 .build();
     }
 }

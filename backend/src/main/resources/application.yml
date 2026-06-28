@@ -60,6 +60,7 @@ app:
     status-endpoint: /IRIntakeAcceptanceA2A/1.0/iris/transstatusorack
     client-id: ${IRIS_CLIENT_ID:}
     use-test-environment: true
+    use-mock: true
 
   mail:
     from: ${MAIL_FROM:noreply@irs1099.com}

@@ -4,8 +4,9 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { submissionService, FormRecordData, FormRecordResponse, SubmissionResponse } from '../services/submissionService';
+import { irsService, ValidationResult } from '../services/irsService';
 import toast from 'react-hot-toast';
-import { Loader2, Plus, Trash2, FileText, ArrowLeft, Users } from 'lucide-react';
+import { Loader2, Plus, Trash2, FileText, ArrowLeft, Users, Send, RefreshCw, CheckCircle, XCircle, AlertTriangle, Clock } from 'lucide-react';
 
 const US_STATES = [
   'AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA',
@@ -58,6 +59,9 @@ export default function Form1099NecPage() {
   const [showForm, setShowForm] = useState(false);
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [checkingStatus, setCheckingStatus] = useState(false);
+  const [validation, setValidation] = useState<ValidationResult | null>(null);
 
   const { register, handleSubmit, formState: { errors }, reset, watch } = useForm<RecordForm>({
     resolver: zodResolver(recordSchema),
@@ -147,8 +151,79 @@ export default function Form1099NecPage() {
     }
   };
 
+  const handleValidate = async () => {
+    if (!submissionId) return;
+    try {
+      const res = await irsService.validate(parseInt(submissionId));
+      setValidation(res.data);
+    } catch {
+      toast.error('Validation check failed');
+    }
+  };
+
+  const handleSubmitToIrs = async () => {
+    if (!submissionId) return;
+    setSubmitting(true);
+    try {
+      // Validate first
+      const valRes = await irsService.validate(parseInt(submissionId));
+      if (!valRes.data.ready) {
+        setValidation(valRes.data);
+        toast.error('Submission is not ready. Fix the errors below.');
+        setSubmitting(false);
+        return;
+      }
+
+      const res = await irsService.submit(parseInt(submissionId));
+      if (res.data.success) {
+        toast.success(`Submitted! Receipt ID: ${res.data.receiptId}`);
+        // Refresh submission data
+        const subRes = await submissionService.get(parseInt(submissionId));
+        setSubmission(subRes.data);
+        setValidation(null);
+      } else {
+        toast.error(res.data.error || 'Submission failed');
+      }
+    } catch (err: unknown) {
+      const message = (err as { response?: { data?: { message?: string } } })?.response?.data?.message || 'Submission failed';
+      toast.error(message);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleCheckStatus = async () => {
+    if (!submissionId) return;
+    setCheckingStatus(true);
+    try {
+      const res = await irsService.checkStatus(parseInt(submissionId));
+      if (res.data.success) {
+        toast.success(`Status: ${res.data.status}`);
+        // Refresh submission
+        const subRes = await submissionService.get(parseInt(submissionId));
+        setSubmission(subRes.data);
+      } else {
+        toast.error(res.data.error || 'Status check failed');
+      }
+    } catch {
+      toast.error('Status check failed');
+    } finally {
+      setCheckingStatus(false);
+    }
+  };
+
   const parseFormData = (json: string) => {
     try { return JSON.parse(json); } catch { return {}; }
+  };
+
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case 'ACCEPTED': return { icon: CheckCircle, color: 'bg-green-100 text-green-800', iconColor: 'text-green-500' };
+      case 'REJECTED': return { icon: XCircle, color: 'bg-red-100 text-red-800', iconColor: 'text-red-500' };
+      case 'SUBMITTED': case 'PROCESSING': return { icon: Clock, color: 'bg-blue-100 text-blue-800', iconColor: 'text-blue-500' };
+      case 'ACCEPTED_WITH_ERRORS': case 'PARTIALLY_ACCEPTED': return { icon: AlertTriangle, color: 'bg-amber-100 text-amber-800', iconColor: 'text-amber-500' };
+      default: return { icon: FileText, color: 'bg-gray-100 text-gray-800', iconColor: 'text-gray-500' };
+    }
   };
 
   if (loading) {
@@ -222,13 +297,97 @@ export default function Form1099NecPage() {
         </div>
       )}
 
-      {/* Add Record Button */}
-      {!showForm && (
+      {/* Add Record Button (only in DRAFT) */}
+      {!showForm && submission?.status === 'DRAFT' && (
         <button onClick={() => setShowForm(true)}
-          className="w-full card border-2 border-dashed border-gray-300 hover:border-primary-400 hover:bg-primary-50 transition-colors flex items-center justify-center gap-2 py-8 text-gray-500 hover:text-primary-600">
+          className="w-full card border-2 border-dashed border-gray-300 hover:border-primary-400 hover:bg-primary-50 transition-colors flex items-center justify-center gap-2 py-8 text-gray-500 hover:text-primary-600 mb-8">
           <Plus size={20} />
           <span className="font-semibold">Add Recipient</span>
         </button>
+      )}
+
+      {/* Submission Actions */}
+      {!showForm && records.length > 0 && (
+        <div className="card mb-8">
+          <h2 className="text-lg font-semibold mb-4">Submit to IRS</h2>
+
+          {/* Validation Results */}
+          {validation && (
+            <div className={`mb-4 p-4 rounded-lg ${validation.ready ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}>
+              {validation.ready ? (
+                <p className="flex items-center gap-2 text-green-800 font-medium">
+                  <CheckCircle size={18} /> Ready to submit ({validation.recordCount} records)
+                </p>
+              ) : (
+                <div>
+                  <p className="flex items-center gap-2 text-red-800 font-medium mb-2">
+                    <XCircle size={18} /> Not ready to submit
+                  </p>
+                  <ul className="list-disc list-inside text-sm text-red-700 space-y-1">
+                    {validation.errors.map((err, i) => <li key={i}>{err}</li>)}
+                  </ul>
+                </div>
+              )}
+              {validation.warnings.length > 0 && (
+                <ul className="list-disc list-inside text-sm text-amber-700 mt-2 space-y-1">
+                  {validation.warnings.map((w, i) => <li key={i}>{w}</li>)}
+                </ul>
+              )}
+            </div>
+          )}
+
+          {/* Receipt ID (after submission) */}
+          {submission?.receiptId && (
+            <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+              <p className="text-sm text-blue-800">
+                <strong>Receipt ID:</strong> {submission.receiptId}
+              </p>
+              {submission.utid && (
+                <p className="text-sm text-blue-700 mt-1">
+                  <strong>UTID:</strong> {submission.utid}
+                </p>
+              )}
+            </div>
+          )}
+
+          {/* Action Buttons */}
+          <div className="flex gap-3">
+            {submission?.status === 'DRAFT' && (
+              <>
+                <button onClick={handleValidate} className="btn-secondary flex items-center gap-2">
+                  <CheckCircle size={16} /> Validate
+                </button>
+                <button onClick={handleSubmitToIrs} disabled={submitting}
+                  className="btn-primary flex items-center gap-2">
+                  {submitting ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
+                  Submit to IRS
+                </button>
+              </>
+            )}
+            {(submission?.status === 'SUBMITTED' || submission?.status === 'PROCESSING') && (
+              <button onClick={handleCheckStatus} disabled={checkingStatus}
+                className="btn-primary flex items-center gap-2">
+                {checkingStatus ? <Loader2 size={16} className="animate-spin" /> : <RefreshCw size={16} />}
+                Check Status
+              </button>
+            )}
+            {submission?.status === 'ACCEPTED' && (
+              <div className="flex items-center gap-2 text-green-600 font-semibold">
+                <CheckCircle size={20} /> Accepted by IRS
+              </div>
+            )}
+            {submission?.status === 'REJECTED' && (
+              <div>
+                <div className="flex items-center gap-2 text-red-600 font-semibold mb-2">
+                  <XCircle size={20} /> Rejected by IRS
+                </div>
+                {submission.irsErrors && (
+                  <p className="text-sm text-red-700">{submission.irsErrors}</p>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
       )}
 
       {/* Record Form */}

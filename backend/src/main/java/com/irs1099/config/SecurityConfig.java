@@ -52,6 +52,7 @@ public class SecurityConfig {
                     "/actuator/health",
                     "/h2-console/**",
                     "/stripe/webhook",
+                    "/mock-irs/**",
                     "/payments/webhook",
                     "/payments/config",
                     "/payments/plans",

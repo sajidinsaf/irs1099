@@ -43,6 +43,7 @@ export interface SubmissionResponse {
   recordCount: number;
   submittedAt: string | null;
   createdAt: string;
+  irsErrors: string | null;
 }
 
 export interface FormRecordResponse {

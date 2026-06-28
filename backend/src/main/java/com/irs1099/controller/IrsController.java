@@ -10,6 +10,7 @@ import com.irs1099.repository.BusinessProfileRepository;
 import com.irs1099.repository.FormRecordRepository;
 import com.irs1099.repository.SubmissionRepository;
 import com.irs1099.security.UserPrincipal;
+import com.irs1099.service.iris.IrisFilingService;
 import com.irs1099.service.iris.IrsXmlGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -27,6 +28,7 @@ import java.util.Map;
 public class IrsController {
 
     private final IrsXmlGenerator xmlGenerator;
+    private final IrisFilingService filingService;
     private final SubmissionRepository submissionRepository;
     private final FormRecordRepository formRecordRepository;
     private final BusinessProfileRepository businessProfileRepository;
@@ -123,5 +125,25 @@ public class IrsController {
         validation.put("taxYear", submission.getTaxYear());
 
         return ResponseEntity.ok(validation);
+    }
+
+    /**
+     * Submit a draft submission to IRS (or mock service).
+     */
+    @PostMapping("/submit/{submissionId}")
+    public ResponseEntity<Map<String, Object>> submitToIrs(
+            @AuthenticationPrincipal UserPrincipal principal,
+            @PathVariable Long submissionId) {
+        return ResponseEntity.ok(filingService.submitToIrs(principal.getId(), submissionId));
+    }
+
+    /**
+     * Check IRS status for a submitted transmission.
+     */
+    @GetMapping("/status/{submissionId}")
+    public ResponseEntity<Map<String, Object>> checkStatus(
+            @AuthenticationPrincipal UserPrincipal principal,
+            @PathVariable Long submissionId) {
+        return ResponseEntity.ok(filingService.checkStatus(principal.getId(), submissionId));
     }
 }

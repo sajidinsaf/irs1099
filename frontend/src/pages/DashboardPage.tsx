@@ -1,9 +1,18 @@
+import { useState, useEffect } from 'react';
 import { useAuthStore } from '../store/authStore';
-import { FileText, Upload, Clock, CheckCircle, AlertCircle, CreditCard } from 'lucide-react';
+import { profileService } from '../services/profileService';
+import { FileText, Upload, Clock, CheckCircle, AlertCircle, CreditCard, Building2, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function DashboardPage() {
   const user = useAuthStore((s) => s.user);
+  const [hasProfile, setHasProfile] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    profileService.hasProfile()
+      .then((res) => setHasProfile(res.data.exists))
+      .catch(() => setHasProfile(false));
+  }, []);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -13,6 +22,23 @@ export default function DashboardPage() {
         </h1>
         <p className="text-gray-600 mt-1">Manage your 1099 filings and submissions</p>
       </div>
+
+      {/* Profile completion banner */}
+      {hasProfile === false && (
+        <Link to="/profile"
+          className="mb-8 flex items-center justify-between p-5 bg-amber-50 border border-amber-200 rounded-xl hover:bg-amber-100 transition-colors">
+          <div className="flex items-center gap-4">
+            <div className="p-3 bg-amber-100 rounded-lg">
+              <Building2 className="text-amber-600" size={24} />
+            </div>
+            <div>
+              <h3 className="font-semibold text-amber-900">Complete your business profile</h3>
+              <p className="text-sm text-amber-700">Add your business details and EIN to start filing 1099s</p>
+            </div>
+          </div>
+          <ArrowRight className="text-amber-600" size={20} />
+        </Link>
+      )}
 
       {/* Quick Actions */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -36,15 +62,15 @@ export default function DashboardPage() {
           </div>
         </button>
 
-        <button className="card hover:shadow-md transition-shadow text-left flex items-start gap-4">
+        <Link to="/profile" className="card hover:shadow-md transition-shadow text-left flex items-start gap-4">
           <div className="p-3 bg-purple-100 rounded-lg">
-            <CreditCard className="text-purple-600" size={24} />
+            <Building2 className="text-purple-600" size={24} />
           </div>
           <div>
-            <h3 className="font-semibold text-lg">Subscription</h3>
-            <p className="text-sm text-gray-600">Manage your plan</p>
+            <h3 className="font-semibold text-lg">Business Profile</h3>
+            <p className="text-sm text-gray-600">{hasProfile ? 'Edit your profile' : 'Set up your business'}</p>
           </div>
-        </button>
+        </Link>
       </div>
 
       {/* Stats */}

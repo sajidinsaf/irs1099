@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 500" fill="none">
+  <!-- Background shapes -->
+  <circle cx="300" cy="250" r="200" fill="#2563eb" opacity="0.08"/>
+  <circle cx="450" cy="150" r="80" fill="#60a5fa" opacity="0.1"/>
+  <circle cx="150" cy="380" r="60" fill="#3b82f6" opacity="0.06"/>
+
+  <!-- Main document/clipboard -->
+  <rect x="180" y="80" width="240" height="320" rx="16" fill="white" stroke="#e2e8f0" stroke-width="2"/>
+  <rect x="180" y="80" width="240" height="60" rx="16" fill="#1e3a8a"/>
+  <rect x="180" y="124" width="240" height="0.5" fill="#1e3a8a"/>
+  <text x="300" y="118" text-anchor="middle" fill="white" font-family="Arial" font-weight="bold" font-size="18">1099-NEC</text>
+
+  <!-- Form fields -->
+  <rect x="205" y="165" width="190" height="12" rx="3" fill="#e2e8f0"/>
+  <rect x="205" y="165" width="120" height="12" rx="3" fill="#2563eb" opacity="0.3"/>
+  <text x="205" y="158" fill="#64748b" font-family="Arial" font-size="9">Payer's Name</text>
+
+  <rect x="205" y="210" width="190" height="12" rx="3" fill="#e2e8f0"/>
+  <rect x="205" y="210" width="80" height="12" rx="3" fill="#2563eb" opacity="0.3"/>
+  <text x="205" y="203" fill="#64748b" font-family="Arial" font-size="9">Payer's TIN</text>
+
+  <rect x="205" y="255" width="190" height="12" rx="3" fill="#e2e8f0"/>
+  <rect x="205" y="255" width="150" height="12" rx="3" fill="#2563eb" opacity="0.3"/>
+  <text x="205" y="248" fill="#64748b" font-family="Arial" font-size="9">Recipient's Name</text>
+
+  <rect x="205" y="300" width="90" height="12" rx="3" fill="#e2e8f0"/>
+  <rect x="205" y="300" width="60" height="12" rx="3" fill="#2563eb" opacity="0.3"/>
+  <text x="205" y="293" fill="#64748b" font-family="Arial" font-size="9">Box 1: Compensation</text>
+
+  <rect x="305" y="300" width="90" height="12" rx="3" fill="#e2e8f0"/>
+  <text x="305" y="293" fill="#64748b" font-family="Arial" font-size="9">Box 4: Tax Withheld</text>
+
+  <!-- Submit button on form -->
+  <rect x="225" y="345" width="150" height="35" rx="8" fill="#2563eb"/>
+  <text x="300" y="367" text-anchor="middle" fill="white" font-family="Arial" font-weight="bold" font-size="13">Submit to IRS</text>
+
+  <!-- Checkmark/success floating element -->
+  <circle cx="440" cy="180" r="36" fill="#10b981"/>
+  <path d="M422 180 L434 192 L458 168" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+
+  <!-- Flying paper/document -->
+  <g transform="translate(100, 150) rotate(-15)">
+    <rect width="70" height="90" rx="6" fill="white" stroke="#cbd5e1" stroke-width="1.5"/>
+    <rect x="10" y="15" width="50" height="4" rx="2" fill="#e2e8f0"/>
+    <rect x="10" y="25" width="35" height="4" rx="2" fill="#e2e8f0"/>
+    <rect x="10" y="35" width="45" height="4" rx="2" fill="#e2e8f0"/>
+    <rect x="10" y="50" width="50" height="4" rx="2" fill="#bfdbfe"/>
+    <rect x="10" y="60" width="30" height="4" rx="2" fill="#bfdbfe"/>
+  </g>
+
+  <!-- Small floating elements -->
+  <circle cx="480" cy="320" r="8" fill="#2563eb" opacity="0.2"/>
+  <circle cx="120" cy="120" r="6" fill="#60a5fa" opacity="0.3"/>
+  <circle cx="500" cy="250" r="10" fill="#3b82f6" opacity="0.15"/>
+
+  <!-- Dollar sign floating -->
+  <circle cx="460" cy="380" r="24" fill="#f0fdf4" stroke="#10b981" stroke-width="2"/>
+  <text x="460" y="388" text-anchor="middle" fill="#10b981" font-family="Arial" font-weight="bold" font-size="20">$</text>
+
+  <!-- Lock/security icon floating -->
+  <g transform="translate(130, 280)">
+    <rect x="0" y="12" width="28" height="22" rx="4" fill="#1e3a8a"/>
+    <path d="M6 12 V8 A8 8 0 0 1 22 8 V12" stroke="#1e3a8a" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <circle cx="14" cy="23" r="3" fill="#60a5fa"/>
+  </g>
+</svg>

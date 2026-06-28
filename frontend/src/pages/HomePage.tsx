@@ -3,6 +3,8 @@ import {
   Shield, FileText, Zap, Bot, CreditCard, Bell,
   CheckCircle, ArrowRight, Clock, Users
 } from 'lucide-react';
+import heroIllustration from '../assets/illustrations/hero-filing.svg';
+import dashboardMockup from '../assets/illustrations/dashboard-mockup.svg';
 
 const features = [
   {
@@ -75,33 +77,41 @@ export default function HomePage() {
   return (
     <div>
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-navy-900 via-navy-800 to-primary-900 text-white py-20 lg:py-28">
+      <section className="bg-gradient-to-br from-navy-900 via-navy-800 to-primary-900 text-white py-16 lg:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-4xl mx-auto">
-            <div className="inline-flex items-center gap-2 bg-white/10 rounded-full px-4 py-1.5 text-sm mb-6">
-              <Clock size={14} />
-              <span>Tax Year 2025 filing is open</span>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            {/* Left: Text content */}
+            <div>
+              <div className="inline-flex items-center gap-2 bg-white/10 rounded-full px-4 py-1.5 text-sm mb-6">
+                <Clock size={14} />
+                <span>Tax Year 2025 filing is open</span>
+              </div>
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight">
+                File Your IRS 1099s
+                <span className="block text-primary-400">Electronically with Ease</span>
+              </h1>
+              <p className="mt-6 text-lg sm:text-xl text-gray-300 max-w-xl">
+                The secure, AI-powered platform for filing information returns directly to the IRS IRIS system.
+                No complex XML. No manual uploads. Just simple, guided filing.
+              </p>
+              <div className="mt-10 flex flex-col sm:flex-row gap-4">
+                <Link to="/register" className="btn-primary text-lg px-8 py-4 flex items-center justify-center gap-2">
+                  Start Filing Now <ArrowRight size={20} />
+                </Link>
+                <a href="#features" className="border-2 border-white/50 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-white/10 transition-colors duration-200 text-center">
+                  Learn More
+                </a>
+              </div>
+              <div className="mt-8 flex flex-wrap gap-6 text-sm text-gray-400">
+                <span className="flex items-center gap-1"><CheckCircle size={16} className="text-green-400" /> IRS Authorized</span>
+                <span className="flex items-center gap-1"><Shield size={16} className="text-green-400" /> 256-bit Encryption</span>
+                <span className="flex items-center gap-1"><Users size={16} className="text-green-400" /> 10,000+ Filers</span>
+              </div>
             </div>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight">
-              File Your IRS 1099s
-              <span className="block text-primary-400">Electronically with Ease</span>
-            </h1>
-            <p className="mt-6 text-lg sm:text-xl text-gray-300 max-w-2xl mx-auto">
-              The secure, AI-powered platform for filing information returns directly to the IRS IRIS system.
-              No complex XML. No manual uploads. Just simple, guided filing.
-            </p>
-            <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/register" className="btn-primary text-lg px-8 py-4 flex items-center justify-center gap-2">
-                Start Filing Now <ArrowRight size={20} />
-              </Link>
-              <a href="#features" className="border-2 border-white/50 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-white/10 transition-colors duration-200">
-                Learn More
-              </a>
-            </div>
-            <div className="mt-8 flex items-center justify-center gap-6 text-sm text-gray-400">
-              <span className="flex items-center gap-1"><CheckCircle size={16} className="text-green-400" /> IRS Authorized</span>
-              <span className="flex items-center gap-1"><Shield size={16} className="text-green-400" /> 256-bit Encryption</span>
-              <span className="flex items-center gap-1"><Users size={16} className="text-green-400" /> 10,000+ Filers</span>
+
+            {/* Right: Illustration */}
+            <div className="hidden lg:block">
+              <img src={heroIllustration} alt="1099 electronic filing illustration" className="w-full max-w-lg mx-auto drop-shadow-2xl" />
             </div>
           </div>
         </div>
@@ -143,6 +153,21 @@ export default function HomePage() {
                 <p className="text-gray-600 text-sm">{step.description}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Dashboard Preview */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900">Your Filing Dashboard</h2>
+            <p className="mt-4 text-lg text-gray-600">Track every submission from draft to IRS acceptance</p>
+          </div>
+          <div className="max-w-5xl mx-auto">
+            <div className="rounded-xl shadow-2xl overflow-hidden border border-gray-200">
+              <img src={dashboardMockup} alt="IRS 1099 Filing Dashboard" className="w-full" />
+            </div>
           </div>
         </div>
       </section>

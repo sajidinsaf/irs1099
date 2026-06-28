@@ -94,7 +94,7 @@ export default function HomePage() {
               <Link to="/register" className="btn-primary text-lg px-8 py-4 flex items-center justify-center gap-2">
                 Start Filing Now <ArrowRight size={20} />
               </Link>
-              <a href="#features" className="btn-secondary border-white/30 text-white hover:bg-white/10 text-lg px-8 py-4">
+              <a href="#features" className="border-2 border-white/50 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-white/10 transition-colors duration-200">
                 Learn More
               </a>
             </div>

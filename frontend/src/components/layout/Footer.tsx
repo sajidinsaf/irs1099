@@ -32,8 +32,8 @@ export default function Footer() {
             <h4 className="text-white font-semibold mb-4">Support</h4>
             <ul className="space-y-2 text-sm">
               <li><a href="#faq" className="hover:text-white transition-colors">FAQ</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Documentation</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Contact Us</a></li>
+              <li><a href="https://docs.irs1099.visibleai.com" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Documentation</a></li>
+              <li><a href="https://docs.irs1099.visibleai.com/support" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Contact Us</a></li>
             </ul>
           </div>
 

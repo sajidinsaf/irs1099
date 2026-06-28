@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useAuthStore } from '../../store/authStore';
-import { LogOut, LayoutDashboard, FileText, User } from 'lucide-react';
+import { LogOut, LayoutDashboard, User, BookOpen } from 'lucide-react';
 
 export default function Navbar() {
   const { isAuthenticated, user, logout } = useAuthStore();
@@ -18,6 +18,9 @@ export default function Navbar() {
             <a href="#features" className="hover:text-primary-400 transition-colors">Features</a>
             <a href="#pricing" className="hover:text-primary-400 transition-colors">Pricing</a>
             <a href="#faq" className="hover:text-primary-400 transition-colors">FAQ</a>
+            <a href="https://docs.irs1099.visibleai.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 hover:text-primary-400 transition-colors">
+              <BookOpen size={16} /> Docs
+            </a>
           </div>
 
           <div className="flex items-center space-x-4">

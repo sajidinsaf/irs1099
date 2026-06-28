@@ -20,6 +20,7 @@ frontend/.vite/
 .env.local
 .env.*.local
 backend/src/main/resources/application-local.yml
+backend/src/main/resources/application-prod.yml
 
 # OS
 .DS_Store

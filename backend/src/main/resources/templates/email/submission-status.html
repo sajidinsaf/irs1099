@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"></head>
+<body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+    <div style="background: #1a365d; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0;">
+        <h1 style="margin: 0;">IRS 1099 Filing Platform</h1>
+    </div>
+    <div style="border: 1px solid #e2e8f0; border-top: none; padding: 30px; border-radius: 0 0 8px 8px;">
+        <h2>Submission Status Update</h2>
+        <p>Hello <span th:text="${name}">User</span>,</p>
+        <p>Your <span th:text="${formType}">1099-NEC</span> submission status has been updated:</p>
+        <div style="background: #f1f5f9; padding: 20px; border-radius: 6px; margin: 20px 0;">
+            <p><strong>Status:</strong> <span th:text="${status}">Accepted</span></p>
+            <p th:if="${receiptId}"><strong>Receipt ID:</strong> <span th:text="${receiptId}">-</span></p>
+            <p th:if="${submittedAt}"><strong>Submitted:</strong> <span th:text="${submittedAt}">-</span></p>
+        </div>
+        <p>Log in to your dashboard for full details.</p>
+    </div>
+</body>
+</html>

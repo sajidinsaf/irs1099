@@ -1,0 +1,116 @@
+spring:
+  application:
+    name: irs1099
+
+  # Database
+  datasource:
+    url: jdbc:mysql://localhost:3306/irs1099?useSSL=true&serverTimezone=UTC&createDatabaseIfNotExist=true
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
+
+  # Email
+  mail:
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+  # Spring AI - Anthropic
+  ai:
+    anthropic:
+      api-key: ${ANTHROPIC_API_KEY:}
+      chat:
+        options:
+          model: claude-sonnet-4-20250514
+          max-tokens: 4096
+
+# App Configuration
+app:
+  jwt:
+    secret: ${JWT_SECRET:change-this-in-production-to-a-256-bit-secret-key}
+    expiration-ms: 3600000       # 1 hour
+    refresh-expiration-ms: 604800000  # 7 days
+
+  encryption:
+    key: ${ENCRYPTION_KEY:change-this-in-production-32-chars}
+
+  cors:
+    allowed-origins: http://localhost:5173,http://localhost:3000
+
+  stripe:
+    api-key: ${STRIPE_API_KEY:}
+    webhook-secret: ${STRIPE_WEBHOOK_SECRET:}
+
+  iris:
+    base-url: https://api.www4.irs.gov
+    test-base-url: https://api.alt.www4.irs.gov
+    token-endpoint: /auth/oauth/v2/token
+    submit-endpoint: /IRIntakeAcceptanceA2A/1.0/irisa2a/v1/intake-acceptance
+    status-endpoint: /IRIntakeAcceptanceA2A/1.0/iris/transstatusorack
+    client-id: ${IRIS_CLIENT_ID:}
+    use-test-environment: true
+
+  mail:
+    from: ${MAIL_FROM:noreply@irs1099.com}
+    base-url: ${APP_BASE_URL:http://localhost:5173}
+
+# Server
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+
+# Actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+
+# Logging
+logging:
+  level:
+    com.irs1099: DEBUG
+    org.springframework.security: INFO
+
+---
+# Development Profile
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+  datasource:
+    url: jdbc:h2:mem:irs1099;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    database-platform: org.hibernate.dialect.H2Dialect
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+logging:
+  level:
+    com.irs1099: DEBUG
+    org.springframework.security: DEBUG

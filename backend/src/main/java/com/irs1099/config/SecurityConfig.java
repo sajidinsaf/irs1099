@@ -43,11 +43,17 @@ public class SecurityConfig {
             .and()
             .authorizeRequests()
                 .antMatchers(
+                    "/",
+                    "/index.html",
+                    "/assets/**",
+                    "/favicon.svg",
                     "/auth/**",
                     "/public/**",
                     "/actuator/health",
                     "/h2-console/**",
-                    "/stripe/webhook"
+                    "/stripe/webhook",
+                    "/login", "/register", "/dashboard",
+                    "/verify-email", "/forgot-password", "/reset-password"
                 ).permitAll()
                 .anyRequest().authenticated()
             .and()

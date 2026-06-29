@@ -2,15 +2,11 @@ package com.irs1099.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Verifies Cloudflare Turnstile CAPTCHA tokens.
@@ -31,11 +27,6 @@ public class TurnstileService {
     @Value("${app.turnstile.enabled:false}")
     private boolean enabled;
 
-    /**
-     * Verify a Turnstile token with Cloudflare.
-     * Returns true if valid, false if invalid.
-     * When disabled, always returns true.
-     */
     public boolean verifyToken(String token) {
         if (!enabled) {
             log.debug("Turnstile disabled, accepting all tokens");
@@ -48,14 +39,11 @@ public class TurnstileService {
         }
 
         try {
-            Map<String, String> formData = new HashMap<>();
-            formData.put("secret", secretKey);
-            formData.put("response", token);
-
-            String responseBody = WebClient.create(verifyUrl)
+            String responseBody = WebClient.create()
                     .post()
-                    .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                    .bodyValue("secret=" + secretKey + "&response=" + token)
+                    .uri(verifyUrl)
+                    .body(BodyInserters.fromFormData("secret", secretKey)
+                            .with("response", token))
                     .retrieve()
                     .bodyToMono(String.class)
                     .block();
@@ -70,11 +58,13 @@ public class TurnstileService {
 
             if (!success) {
                 log.warn("Turnstile verification failed: {}", responseBody);
+            } else {
+                log.debug("Turnstile verification succeeded");
             }
 
             return success;
         } catch (Exception e) {
-            log.error("Turnstile verification error", e);
+            log.error("Turnstile verification error: {}", e.getMessage());
             return false;
         }
     }

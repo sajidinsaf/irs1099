@@ -71,6 +71,12 @@ app:
     endpoint: ${VEROPS_ENDPOINT:https://ingest.verops.io/rum/v2/beacon}
     environment: ${VEROPS_ENVIRONMENT:dev}
 
+  turnstile:
+    site-key: ${TURNSTILE_SITE_KEY:}
+    secret-key: ${TURNSTILE_SECRET_KEY:}
+    verify-url: https://challenges.cloudflare.com/turnstile/v0/siteverify
+    enabled: ${TURNSTILE_ENABLED:false}
+
   mail:
     from: ${MAIL_FROM:noreply@irs1099.com}
     base-url: ${APP_BASE_URL:http://localhost:5173}

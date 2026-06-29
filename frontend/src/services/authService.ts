@@ -6,6 +6,7 @@ export interface RegisterData {
   firstName: string;
   lastName: string;
   phone?: string;
+  captchaToken?: string;
 }
 
 export interface LoginData {

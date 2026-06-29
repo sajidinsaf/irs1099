@@ -9,6 +9,7 @@ import com.irs1099.repository.UserRepository;
 import com.irs1099.security.JwtTokenProvider;
 import com.irs1099.security.UserPrincipal;
 import com.irs1099.service.AuthService;
+import com.irs1099.service.TurnstileService;
 import com.irs1099.service.notification.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -30,10 +31,16 @@ public class AuthServiceImpl implements AuthService {
     private final JwtTokenProvider tokenProvider;
     private final AuthenticationManager authenticationManager;
     private final NotificationService notificationService;
+    private final TurnstileService turnstileService;
 
     @Override
     @Transactional
     public AuthResponse register(RegisterRequest request) {
+        // Verify CAPTCHA
+        if (!turnstileService.verifyToken(request.getCaptchaToken())) {
+            throw new BadRequestException("CAPTCHA verification failed. Please try again.");
+        }
+
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new BadRequestException("Email is already registered");
         }

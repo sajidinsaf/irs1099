@@ -20,4 +20,7 @@ public class RegisterRequest {
     private String lastName;
 
     private String phone;
+
+    /** Cloudflare Turnstile CAPTCHA token */
+    private String captchaToken;
 }

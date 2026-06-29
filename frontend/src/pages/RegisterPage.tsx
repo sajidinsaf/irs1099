@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -7,6 +7,8 @@ import { authService } from '../services/authService';
 import { useAuthStore } from '../store/authStore';
 import toast from 'react-hot-toast';
 import { Loader2 } from 'lucide-react';
+
+const TURNSTILE_SITE_KEY = '0x4AAAAAADswkr17WQC8BpUq';
 
 const registerSchema = z.object({
   firstName: z.string().min(1, 'First name is required'),
@@ -26,12 +28,45 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const setAuth = useAuthStore((s) => s.setAuth);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const turnstileRef = useRef<HTMLDivElement>(null);
 
   const { register, handleSubmit, formState: { errors } } = useForm<RegisterForm>({
     resolver: zodResolver(registerSchema),
   });
 
+  // Load Turnstile script
+  useEffect(() => {
+    if (document.querySelector('script[src*="turnstile"]')) return;
+    const script = document.createElement('script');
+    script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
+    script.async = true;
+    script.defer = true;
+    document.head.appendChild(script);
+  }, []);
+
+  // Render Turnstile widget
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if ((window as any).turnstile && turnstileRef.current && !turnstileRef.current.hasChildNodes()) {
+        (window as any).turnstile.render(turnstileRef.current, {
+          sitekey: TURNSTILE_SITE_KEY,
+          callback: (token: string) => setCaptchaToken(token),
+          'expired-callback': () => setCaptchaToken(null),
+          theme: 'light',
+        });
+        clearInterval(interval);
+      }
+    }, 100);
+    return () => clearInterval(interval);
+  }, []);
+
   const onSubmit = async (data: RegisterForm) => {
+    if (!captchaToken) {
+      toast.error('Please complete the CAPTCHA verification');
+      return;
+    }
+
     setLoading(true);
     try {
       const response = await authService.register({
@@ -40,6 +75,7 @@ export default function RegisterPage() {
         firstName: data.firstName,
         lastName: data.lastName,
         phone: data.phone,
+        captchaToken,
       });
       const { user, accessToken, refreshToken } = response.data;
       setAuth(user, accessToken, refreshToken);
@@ -94,7 +130,10 @@ export default function RegisterPage() {
           {errors.confirmPassword && <p className="text-red-500 text-sm mt-1">{errors.confirmPassword.message}</p>}
         </div>
 
-        <button type="submit" disabled={loading} className="btn-primary w-full flex items-center justify-center gap-2">
+        {/* Cloudflare Turnstile CAPTCHA */}
+        <div ref={turnstileRef} className="flex justify-center" />
+
+        <button type="submit" disabled={loading || !captchaToken} className="btn-primary w-full flex items-center justify-center gap-2">
           {loading && <Loader2 size={18} className="animate-spin" />}
           Create Account
         </button>

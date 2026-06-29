@@ -29,16 +29,15 @@ public class DashboardController {
             @AuthenticationPrincipal UserPrincipal principal) {
         Long userId = principal.getId();
 
-        Page<Submission> recentSubmissions = submissionRepository
+        var recentSubmissions = submissionRepository
                 .findByUserIdOrderByCreatedAtDesc(userId, PageRequest.of(0, 5));
         long unreadNotifications = notificationRepository
                 .countByUserIdAndReadAtIsNull(userId);
 
-        Map<String, Object> summary = new HashMap<>();
-        summary.put("recentSubmissions", recentSubmissions.getContent());
-        summary.put("totalSubmissions", recentSubmissions.getTotalElements());
-        summary.put("unreadNotifications", unreadNotifications);
-
-        return ResponseEntity.ok(summary);
+        return ResponseEntity.ok(Map.of(
+                "recentSubmissions", recentSubmissions.getContent(),
+                "totalSubmissions", recentSubmissions.getTotalElements(),
+                "unreadNotifications", unreadNotifications
+        ));
     }
 }

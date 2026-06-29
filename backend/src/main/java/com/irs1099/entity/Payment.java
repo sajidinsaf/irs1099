@@ -1,6 +1,6 @@
 package com.irs1099.entity;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 

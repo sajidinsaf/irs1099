@@ -5,7 +5,7 @@ import com.irs1099.dto.request.RegisterRequest;
 import com.irs1099.dto.response.ApiResponse;
 import com.irs1099.dto.response.AuthResponse;
 import com.irs1099.service.AuthService;
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

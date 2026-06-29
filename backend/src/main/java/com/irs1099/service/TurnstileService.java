@@ -4,12 +4,14 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.BodyInserters;
-import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 
 /**
- * Verifies Cloudflare Turnstile CAPTCHA tokens.
+ * Verifies Cloudflare Turnstile CAPTCHA tokens using RestTemplate.
  * When disabled (dev), all tokens are accepted.
  */
 @Service
@@ -17,6 +19,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 public class TurnstileService {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
+    private final RestTemplate restTemplate = new RestTemplate();
 
     @Value("${app.turnstile.secret-key:}")
     private String secretKey;
@@ -39,27 +42,29 @@ public class TurnstileService {
         }
 
         try {
-            String responseBody = WebClient.create()
-                    .post()
-                    .uri(verifyUrl)
-                    .body(BodyInserters.fromFormData("secret", secretKey)
-                            .with("response", token))
-                    .retrieve()
-                    .bodyToMono(String.class)
-                    .block();
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-            if (responseBody == null) {
+            MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+            body.add("secret", secretKey);
+            body.add("response", token);
+
+            HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(body, headers);
+
+            ResponseEntity<String> response = restTemplate.postForEntity(verifyUrl, request, String.class);
+
+            if (response.getBody() == null) {
                 log.error("Turnstile verification returned null response");
                 return false;
             }
 
-            JsonNode json = objectMapper.readTree(responseBody);
+            JsonNode json = objectMapper.readTree(response.getBody());
             boolean success = json.path("success").asBoolean(false);
 
             if (!success) {
-                log.warn("Turnstile verification failed: {}", responseBody);
+                log.warn("Turnstile verification failed: {}", response.getBody());
             } else {
-                log.debug("Turnstile verification succeeded");
+                log.info("Turnstile verification succeeded");
             }
 
             return success;

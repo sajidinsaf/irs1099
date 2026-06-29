@@ -8,6 +8,7 @@ import com.irs1099.exception.ResourceNotFoundException;
 import com.irs1099.repository.BusinessProfileRepository;
 import com.irs1099.repository.FormRecordRepository;
 import com.irs1099.repository.SubmissionRepository;
+import com.irs1099.service.observability.TelemetryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -34,6 +35,7 @@ public class IrisFilingService {
 
     private final IrsXmlGenerator xmlGenerator;
     private final IrisSubmissionClient submissionClient;
+    private final TelemetryService telemetry;
     private final SubmissionRepository submissionRepository;
     private final FormRecordRepository formRecordRepository;
     private final BusinessProfileRepository businessProfileRepository;
@@ -43,6 +45,7 @@ public class IrisFilingService {
      */
     @Transactional
     public Map<String, Object> submitToIrs(Long userId, Long submissionId) {
+        long startTime = System.currentTimeMillis();
         Submission submission = submissionRepository.findByIdAndUserId(submissionId, userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Submission", "id", submissionId));
 
@@ -95,6 +98,9 @@ public class IrisFilingService {
             submission.setIrsErrors(submitResponse.error);
             submissionRepository.save(submission);
 
+            telemetry.recordSubmissionFailure(userId, submissionId, submission.getFormType(),
+                    submitResponse.error, System.currentTimeMillis() - startTime);
+
             Map<String, Object> result = new HashMap<>();
             result.put("success", false);
             result.put("error", submitResponse.error);
@@ -117,6 +123,9 @@ public class IrisFilingService {
 
         log.info("Submission {} submitted to IRS. ReceiptId={}, UTID={}",
                 submissionId, submitResponse.receiptId, xmlResult.getUtid());
+
+        telemetry.recordSubmission(userId, submissionId, submission.getFormType(),
+                records.size(), submitResponse.receiptId, System.currentTimeMillis() - startTime);
 
         Map<String, Object> result = new HashMap<>();
         result.put("success", true);

@@ -57,7 +57,7 @@ public class SecurityConfig {
                     "/payments/config",
                     "/payments/plans",
                     "/login", "/register", "/dashboard", "/profile",
-                    "/filing/**", "/billing",
+                    "/filing/**", "/billing", "/admin-panel/**",
                     "/verify-email", "/forgot-password", "/reset-password"
                 ).permitAll()
                 .anyRequest().authenticated()

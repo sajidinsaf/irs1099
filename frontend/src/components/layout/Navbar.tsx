@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useAuthStore } from '../../store/authStore';
-import { LogOut, LayoutDashboard, User, BookOpen } from 'lucide-react';
+import { LogOut, LayoutDashboard, User, BookOpen, Shield } from 'lucide-react';
 
 export default function Navbar() {
   const { isAuthenticated, user, logout } = useAuthStore();
@@ -30,6 +30,12 @@ export default function Navbar() {
                   <LayoutDashboard size={18} />
                   Dashboard
                 </Link>
+                {user?.role === 'ADMIN' && (
+                  <Link to="/admin-panel" className="flex items-center gap-2 text-amber-400 hover:text-amber-300 transition-colors">
+                    <Shield size={18} />
+                    Admin
+                  </Link>
+                )}
                 <div className="flex items-center gap-2 text-sm text-gray-300">
                   <User size={16} />
                   {user?.firstName}

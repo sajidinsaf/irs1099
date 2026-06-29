@@ -16,4 +16,5 @@ public interface SubmissionRepository extends JpaRepository<Submission, Long> {
     Optional<Submission> findByIdAndUserId(Long id, Long userId);
     Optional<Submission> findByReceiptId(String receiptId);
     List<Submission> findByStatus(Submission.SubmissionStatus status);
+    Page<Submission> findByStatus(Submission.SubmissionStatus status, Pageable pageable);
 }

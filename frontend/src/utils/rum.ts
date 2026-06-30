@@ -12,8 +12,9 @@ interface WebVitalMetric {
 }
 
 function sendToVerops(metric: WebVitalMetric) {
-  const payload = {
+  const payload = JSON.stringify({
     app_id: RUM_APP_ID,
+    api_key: RUM_API_KEY,
     event_type: 'web_vitals',
     timestamp: new Date().toISOString(),
     metric_name: metric.name,
@@ -23,21 +24,20 @@ function sendToVerops(metric: WebVitalMetric) {
     page_url: window.location.href,
     user_agent: navigator.userAgent,
     session_id: getSessionId(),
-  };
+  });
 
-  // Use sendBeacon for reliability (survives page unload)
+  // Use sendBeacon with text/plain to avoid CORS preflight
   if (navigator.sendBeacon) {
-    const blob = new Blob([JSON.stringify(payload)], { type: 'application/json' });
-    navigator.sendBeacon(`${RUM_ENDPOINT}?apiKey=${RUM_API_KEY}`, blob);
+    const blob = new Blob([payload], { type: 'text/plain' });
+    navigator.sendBeacon(RUM_ENDPOINT, blob);
   } else {
-    fetch(`${RUM_ENDPOINT}?apiKey=${RUM_API_KEY}`, {
+    // Fallback: fetch with no-cors mode (fire-and-forget)
+    fetch(RUM_ENDPOINT, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
+      body: payload,
+      mode: 'no-cors',
       keepalive: true,
-    }).catch(() => {
-      // Silently fail - don't impact user experience
-    });
+    }).catch(() => {});
   }
 }
 

@@ -1,8 +1,8 @@
 import { onLCP, onFCP, onCLS, onINP, onTTFB } from 'web-vitals';
 
-const RUM_ENDPOINT = 'https://ingest.verops.io/rum/v2/beacon';
-const RUM_APP_ID = 'rum_d1e8a8c104114024';
-const RUM_API_KEY = 'rum_pk_JR8PVZsKd6JxxUekTZ7jftTWZfZHZhp21TYj1kxuVRc';
+// RUM data is sent to our own backend proxy at /observability/rum/collect
+// Backend forwards to Verops server-side (no CORS issues)
+const RUM_PROXY = import.meta.env.DEV ? '/api/observability/rum/collect' : '/observability/rum/collect';
 
 interface WebVitalMetric {
   name: string;
@@ -11,10 +11,8 @@ interface WebVitalMetric {
   delta: number;
 }
 
-function sendToVerops(metric: WebVitalMetric) {
-  const payload = JSON.stringify({
-    app_id: RUM_APP_ID,
-    api_key: RUM_API_KEY,
+function sendToProxy(metric: WebVitalMetric) {
+  const payload = {
     event_type: 'web_vitals',
     timestamp: new Date().toISOString(),
     metric_name: metric.name,
@@ -22,23 +20,15 @@ function sendToVerops(metric: WebVitalMetric) {
     metric_id: metric.id,
     metric_delta: metric.delta,
     page_url: window.location.href,
-    user_agent: navigator.userAgent,
     session_id: getSessionId(),
-  });
+  };
 
-  // Use sendBeacon with text/plain to avoid CORS preflight
-  if (navigator.sendBeacon) {
-    const blob = new Blob([payload], { type: 'text/plain' });
-    navigator.sendBeacon(RUM_ENDPOINT, blob);
-  } else {
-    // Fallback: fetch with no-cors mode (fire-and-forget)
-    fetch(RUM_ENDPOINT, {
-      method: 'POST',
-      body: payload,
-      mode: 'no-cors',
-      keepalive: true,
-    }).catch(() => {});
-  }
+  fetch(RUM_PROXY, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+    keepalive: true,
+  }).catch(() => {});
 }
 
 function getSessionId(): string {
@@ -51,16 +41,16 @@ function getSessionId(): string {
 }
 
 /**
- * Initialize Verops RUM web vitals tracking.
- * Call once in main.tsx.
+ * Initialize RUM web vitals tracking.
+ * Sends data to our backend proxy which forwards to Verops.
  */
 export function initRUM() {
   try {
-    onLCP(sendToVerops);
-    onFCP(sendToVerops);
-    onCLS(sendToVerops);
-    onINP(sendToVerops);
-    onTTFB(sendToVerops);
+    onLCP(sendToProxy);
+    onFCP(sendToProxy);
+    onCLS(sendToProxy);
+    onINP(sendToProxy);
+    onTTFB(sendToProxy);
   } catch {
     // Silently fail
   }

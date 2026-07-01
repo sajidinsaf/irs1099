@@ -53,7 +53,7 @@ public class SecurityConfig {
                     "/payments/webhook",
                     "/payments/config",
                     "/payments/plans",
-                    "/observability/rum-config",
+                    "/observability/**",
                     "/login", "/register", "/dashboard", "/profile",
                     "/filing/**", "/billing", "/admin-panel/**",
                     "/verify-email", "/forgot-password", "/reset-password"
